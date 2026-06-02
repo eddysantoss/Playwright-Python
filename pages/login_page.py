@@ -1,4 +1,4 @@
-from playwright.sync_api import Page
+from playwright.sync_api import Page, expect
 
 class LoginPage:
     def __init__(self, page: Page):
@@ -12,6 +12,11 @@ class LoginPage:
         self.username_input.fill(username)
         self.password_input.fill(password)
         self.login_button.click()
+        
+    def is_login_invalid_credentials(self, timeout: float = 5000) -> bool:
+        expect(self.page.get_by_role("alert")).to_contain_text("Invalid credentials", timeout=timeout)
+        return True
+        
        
         
     
