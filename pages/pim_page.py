@@ -51,7 +51,18 @@ class PimPage:
         return True
         
         
+    def get_error_messages(self, timeout: float = 5000) -> list:
+        error_elements = self.page.get_by_text("Required").all()
+        expect(self.page.get_by_text("Required")).to_have_count(3, timeout=timeout)
+        return error_elements
+                
+        
+       
+        
+        
 
-  
-        
-        
+
+
+   
+
+
