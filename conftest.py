@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from pages.pim_page import PimPage
 from pages.login_page import LoginPage
 from pages.home_page import HomePage
+from playwright.sync_api import sync_playwright
 
 load_dotenv(override=True)
 
@@ -46,3 +47,15 @@ def authenticated_pim_page(page, credentials):
     pim_page.wait_for_PIM_page_loaded()
     
     return pim_page
+
+@pytest.fixture
+def page():
+    with sync_playwright() as p:
+        browser = p.chromium.launch(
+            headless=False,
+            args=["--start-maximized"]
+        )
+        context = browser.new_context(no_viewport=True)
+        page = context.new_page()
+        yield page
+        browser.close()
