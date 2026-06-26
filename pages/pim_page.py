@@ -74,8 +74,16 @@ class PimPage:
         
         employee_row = self.page.locator(f"text={employee_partial_name}").first
         expect(employee_row).to_be_visible(timeout=timeout)
-      
         return True
+    
+    def is_employee_in_results(self, employee_partial_name: str, timeout: float = DEFAULT_TIMEOUT) -> bool:
+        """
+        Checks if an employee with the given partial name is present in the search results.
+        
+        """
+        employee_row = self.page.locator(f"text={employee_partial_name}").first
+        expect(employee_row).to_be_visible(timeout=timeout)
+               
         
     def delete_employee(self, timeout: float = DEFAULT_TIMEOUT) -> bool:
         """
