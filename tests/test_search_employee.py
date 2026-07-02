@@ -17,7 +17,7 @@ def test_search_employee(authenticated_pim_page):
     pim_page.search_employee(employee_full_name, employee_partial_name)
     
     # Verify that the employee appears in the search results
-    pim_page.is_employee_in_results(employee_partial_name)
+    pim_page.assert_employee_in_results(employee_partial_name)
     
     # Delete the employee after verification to clean up
     assert pim_page.delete_employee()

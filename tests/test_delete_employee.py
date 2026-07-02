@@ -10,7 +10,7 @@ def test_delete_employee(authenticated_pim_page):
     """
     pim_page = authenticated_pim_page
     
-    # Test data (fixed - multiple data sets tested in test_add_employee)
+    # Test data 
     first_name = "DeleteTest"
     middle_name = "Middle Name"
     last_name = "Last Name"
@@ -28,4 +28,5 @@ def test_delete_employee(authenticated_pim_page):
 
     # Step 4: Verify deletion was successful
     assert pim_page.is_employee_deleted_successfully()
+    assert pim_page.is_employee_not_in_results(employee_partial_name)
     

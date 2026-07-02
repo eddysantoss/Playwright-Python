@@ -76,7 +76,7 @@ class PimPage:
         expect(employee_row).to_be_visible(timeout=timeout)
         return True
     
-    def is_employee_in_results(self, employee_partial_name: str, timeout: float = DEFAULT_TIMEOUT) -> bool:
+    def assert_employee_in_results(self, employee_partial_name: str, timeout: float = DEFAULT_TIMEOUT):
         """
         Checks if an employee with the given partial name is present in the search results.
         
@@ -104,6 +104,14 @@ class PimPage:
         
         success_message = self.page.get_by_text(re.compile(r"Successfully Deleted"), exact=False)
         expect(success_message).to_be_visible(timeout=timeout)
+        return True
+
+    def is_employee_not_in_results(self, employee_partial_name: str, timeout: float = DEFAULT_TIMEOUT) -> bool:
+        """
+        Verifies that the employee is not present in the search results.
+        """
+        employee_row = self.page.locator(f"text={employee_partial_name}").first
+        expect(employee_row).not_to_be_visible(timeout=timeout)
         return True
 
 
