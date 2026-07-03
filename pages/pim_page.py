@@ -20,12 +20,22 @@ class PimPage:
         expect(self.page.get_by_text("PIM", exact=True)).to_be_visible(timeout=timeout)
         return True
     
+    def _normalize_timeout(self, timeout):
+        if isinstance(timeout, str):
+            try:
+                return float(timeout)
+            except ValueError:
+                raise ValueError(f"Invalid timeout value: {timeout!r}. Expected a number.")
+        return timeout
+
     def _wait_and_click(self, locator, timeout: float = DEFAULT_TIMEOUT):
+        timeout = self._normalize_timeout(timeout)
         expect(locator).to_be_visible(timeout=timeout)
         expect(locator).to_be_enabled(timeout=timeout)
         locator.click()
         
     def _wait_and_fill(self, locator, value: str, timeout: float = DEFAULT_TIMEOUT):   
+        timeout = self._normalize_timeout(timeout)
         expect(locator).to_be_visible(timeout=timeout)
         expect(locator).to_be_enabled(timeout=timeout)
         locator.fill(value)
@@ -56,33 +66,29 @@ class PimPage:
     
     def search_employee(self, employee_full_name: str, employee_partial_name: str, timeout: float = DEFAULT_TIMEOUT) -> bool:
         """
-        Search for an employee by name in the employee list.
-
+        Executes the search for an employee and leaves the result state ready for assertions.
         """
-        # Navigate to Employee List if not already there
+        self._wait_and_click(self.pim_page, timeout)
+
         employee_list_link = self.page.get_by_role("link", name="Employee List")
         self._wait_and_click(employee_list_link, timeout)
         expect(self.page.get_by_role("heading", name="Employee Information")).to_be_visible(timeout=timeout)
-        
-        # Fill the search field
+
         search_input = self.page.get_by_role("textbox", name="Type for hints...").first
         search_input.clear()
         self._wait_and_fill(search_input, employee_full_name, timeout)
-        
+
         search_button = self.page.locator("button[type='submit']")
         self._wait_and_click(search_button, timeout)
-        
+        return True
+    
+    def assert_employee_in_results(self, employee_partial_name: str, timeout: float = DEFAULT_TIMEOUT) -> bool:
+        """
+        Checks if an employee with the given partial name is present in the search results.
+        """
         employee_row = self.page.locator(f"text={employee_partial_name}").first
         expect(employee_row).to_be_visible(timeout=timeout)
         return True
-    
-    def assert_employee_in_results(self, employee_partial_name: str, timeout: float = DEFAULT_TIMEOUT):
-        """
-        Checks if an employee with the given partial name is present in the search results.
-        
-        """
-        employee_row = self.page.locator(f"text={employee_partial_name}").first
-        expect(employee_row).to_be_visible(timeout=timeout)
                
         
     def delete_employee(self, timeout: float = DEFAULT_TIMEOUT) -> bool:
@@ -112,6 +118,16 @@ class PimPage:
         """
         employee_row = self.page.locator(f"text={employee_partial_name}").first
         expect(employee_row).not_to_be_visible(timeout=timeout)
+        return True
+
+    def assert_no_search_results(self, timeout: float = DEFAULT_TIMEOUT) -> bool:
+        """
+        Validates that a search returns no records by checking the empty-state message.
+        """
+        no_records_message = self.page.get_by_text("No Records Found", exact=True).first
+        expect(no_records_message).to_be_visible(timeout=timeout)
+        expect(no_records_message).to_contain_text("No Records Found", timeout=timeout)
+        
         return True
 
 

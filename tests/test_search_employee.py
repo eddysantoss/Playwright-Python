@@ -22,3 +22,15 @@ def test_search_employee(authenticated_pim_page):
     # Delete the employee after verification to clean up
     assert pim_page.delete_employee()
     assert pim_page.is_employee_deleted_successfully()
+
+
+def test_search_employee_not_found(authenticated_pim_page):
+    """
+    Validate that a search for a non-existing employee returns no results.
+    """
+    pim_page = authenticated_pim_page
+    
+    non_existing_name = "NoSuchEmployeeXYZ"
+    
+    assert pim_page.search_employee(non_existing_name, non_existing_name)
+    assert pim_page.assert_no_search_results()
