@@ -44,7 +44,7 @@ def authenticated_pim_page(page, credentials):
     login_page.enter_login_credentials(credentials["username"], credentials["password"])
     assert home_page.is_upgrade_button_visible()
     
-    pim_page.wait_for_PIM_page_loaded()
+    pim_page.wait_for_pim_page_loaded()
     
     return pim_page
 
