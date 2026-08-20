@@ -72,7 +72,7 @@ class PimPage:
         employee_full_name: str,
         employee_partial_name: str | None = None,
         timeout: float = DEFAULT_TIMEOUT,
-    ) -> None:
+    ) -> bool:
         """Open Employee List and search by full or partial name."""
         self._wait_and_click(self.pim_page, timeout)
 
@@ -88,6 +88,7 @@ class PimPage:
 
         search_button = self.page.locator("button[type='submit']")
         self._wait_and_click(search_button, timeout)
+        return True
 
     def assert_employee_in_results(
         self,
@@ -96,9 +97,10 @@ class PimPage:
     ) -> bool:
         employee_row = self.page.locator(f"text={employee_name}").first
         expect(employee_row).to_be_visible(timeout=timeout)
+        return True
                
         
-    def delete_employee(self, timeout: float = DEFAULT_TIMEOUT) -> None:
+    def delete_employee(self, timeout: float = DEFAULT_TIMEOUT) -> bool:
         """Delete the selected employee and confirm the action."""
         delete_button = self.page.locator(
             ".oxd-table-card-cell-checkbox > .oxd-checkbox-wrapper > label > "
@@ -111,6 +113,7 @@ class PimPage:
 
         confirm_delete_button = self.page.get_by_role("button", name=" Yes, Delete")
         self._wait_and_click(confirm_delete_button, timeout)
+        return True
         
     def is_employee_deleted_successfully(self, timeout: float = DEFAULT_TIMEOUT) -> bool:
         success_message = self.page.get_by_text(re.compile(r"Successfully Deleted"), exact=False)
