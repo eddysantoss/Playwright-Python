@@ -10,7 +10,7 @@ class PimPage:
     def __init__(self, page: Page) -> None:
         self.page = page
         self.pim_page = page.get_by_role("link", name="PIM")
-        self.add_employee_button = page.get_by_role("link", name="Add Employee")
+        self.add_employee_button = page.get_by_role("button", name=re.compile(r"Add"))
         self.first_name_input = page.get_by_role("textbox", name="First Name")
         self.middle_name_input = page.get_by_role("textbox", name="Middle Name")
         self.last_name_input = page.get_by_role("textbox", name="Last Name")
