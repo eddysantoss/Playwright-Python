@@ -51,8 +51,9 @@ def authenticated_pim_page(page, credentials):
 @pytest.fixture
 def page():
     with sync_playwright() as p:
+        headless = os.getenv("PLAYWRIGHT_HEADLESS", "false").lower() == "true"
         browser = p.chromium.launch(
-            headless=False,
+            headless=headless,
             args=["--start-maximized"]
         )
         context = browser.new_context(no_viewport=True)
