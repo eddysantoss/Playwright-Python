@@ -83,6 +83,7 @@ class PimPage:
         ).to_be_visible(timeout=timeout)
 
         search_input = self.page.get_by_role("textbox", name="Type for hints...").first
+        search_input.wait_for(state="visible")
         search_input.clear()
         self._wait_and_fill(search_input, employee_full_name, timeout)
 
