@@ -9,7 +9,8 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    
+    runs-on: ubuntu-22.04
     permissions:
       contents: read
     env:
@@ -32,9 +33,15 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt
 
+      
+      - name: Update apt and clean cache
+        run: |
+          sudo apt-get clean
+          sudo apt-get update
+
       - name: Install Playwright browsers
         run: |
-          python -m playwright install --with-deps
+          python -m playwright install chromium firefox
 
       - name: Run Playwright tests with HTML report
         run: |
