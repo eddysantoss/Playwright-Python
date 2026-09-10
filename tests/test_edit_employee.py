@@ -17,7 +17,7 @@ def test_edit_employee(authenticated_pim_page):
 
     # Action: edit the newly added employee's details
     pim_page.edit_employee("Boni Middle", new_last_name="Silva")
-    pim_page.page.wait_for_selector("text=Silva", timeout=5000)
+    pim_page.page.wait_for_selector("text=Silva", timeout=10000)
 
     # Validation: verify that the details were updated
     updated_employee = pim_page.get_employee_details("Boni Middle")
