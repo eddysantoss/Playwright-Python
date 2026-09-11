@@ -6,6 +6,7 @@ from playwright.sync_api import Page, expect
 
 class PimPage:
     DEFAULT_TIMEOUT = 6000
+    CI_TIMEOUT = 15000
 
     def __init__(self, page: Page) -> None:
         self.page = page
@@ -68,27 +69,25 @@ class PimPage:
         return [elem.inner_text() for elem in error_elements if elem.is_visible()]
     
     def search_employee(
-        self,
-        employee_full_name: str,
-        employee_partial_name: str | None = None,
-        timeout: float = DEFAULT_TIMEOUT,
-    ) -> bool:
-        """Open Employee List and search by full or partial name."""
+    self,
+    employee_full_name: str,
+    employee_partial_name: str | None = None,
+    timeout: float = DEFAULT_TIMEOUT,
+) -> bool:
         self._wait_and_click(self.pim_page, timeout)
+        self._wait_and_click(self.page.get_by_role("link", name="Employee List"), timeout)
 
-        employee_list_link = self.page.get_by_role("link", name="Employee List")
-        self._wait_and_click(employee_list_link, timeout)
-        expect(
-            self.page.get_by_role("heading", name="Employee Information")
-        ).to_be_visible(timeout=timeout)
+        expect(self.page.get_by_role("heading", name="Employee Information")).to_be_visible(timeout=timeout)
 
-        search_input = self.page.get_by_role("textbox", name="Type for hints...").first
-        search_input.wait_for(state="visible")
+        search_form = self.page.locator(".oxd-table-filter")
+        search_input = search_form.locator("input[placeholder='Type for hints...']").first
+
+        expect(search_input).to_be_visible(timeout=max(timeout, self.CI_TIMEOUT))
         search_input.clear()
-        self._wait_and_fill(search_input, employee_full_name, timeout)
+        self._wait_and_fill(search_input, employee_full_name, max(timeout, self.CI_TIMEOUT))
 
         search_button = self.page.locator("button[type='submit']")
-        self._wait_and_click(search_button, timeout)
+        self._wait_and_click(search_button, max(timeout, self.CI_TIMEOUT))
         return True
 
     def assert_employee_in_results(
